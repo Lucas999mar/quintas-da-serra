@@ -1,7 +1,7 @@
 const DataManager = (() => {
   'use strict';
   const KEYS = { PROPERTIES: 'qds_properties', SETTINGS: 'qds_settings', AUTH: 'qds_auth_session' };
-  const ADMIN = { username: 'admin', password: 'admin123' };
+  const ADMIN = { username: 'quintasdaserra', password: '@Qs198236' };
 
   function genId() { return 'p_' + Date.now().toString(36) + Math.random().toString(36).substr(2,6); }
 
