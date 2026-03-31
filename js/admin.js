@@ -414,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>
                         <div class="actions">
                             <button class="btn-icon" style="background:#25d366; color:white; font-size:16px;" title="WhatsApp" onclick="whatsappLead('${l.id}')">📲</button>
-                            <button class="btn-icon" style="background:#f1f5f9; color:#475569;" title="Ver Mensagem" onclick="alert('Mensagem de ${l.name}:\\n\\n${l.message}')">👁️</button>
+                            <button class="btn-icon" style="background:#f1f5f9; color:#475569;" title="Ver Mensagem" onclick="viewLeadMessage('${l.id}')">👁️</button>
                             <button class="btn-icon btn-delete" title="Excluir" onclick="deleteLead('${l.id}')">🗑</button>
                         </div>
                     </td>
@@ -452,6 +452,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const message = encodeURIComponent(`Olá ${lead.name}, vi seu contato no site Quintas Da Serra sobre "${lead.subject}". Como posso ajudar?`);
         window.open(`https://wa.me/${finalPhone}?text=${message}`, '_blank');
+    };
+
+    window.viewLeadMessage = (id) => {
+        const leads = DataManager.getAllLeads();
+        const lead = leads.find(l => l.id === id);
+        if(!lead) return;
+        
+        // Usar um alert limpo ou modal
+        alert(`Mensagem de: ${lead.name}\nAssunto: ${lead.subject}\n\n"${lead.message}"`);
     };
 
     checkAuth();

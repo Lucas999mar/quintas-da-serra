@@ -33,14 +33,35 @@ document.addEventListener('DOMContentLoaded', () => {
   /* --- Contact Form --- */
   const contactForm = document.getElementById('contactForm');
   if (contactForm) {
+    const subjectSelect = document.getElementById('assunto');
+    const groupOutro = document.getElementById('group-outro');
+    const inputOutro = document.getElementById('assuntoOutro');
+
+    if (subjectSelect) {
+      subjectSelect.addEventListener('change', () => {
+        if (subjectSelect.value === 'outro') {
+          groupOutro.style.display = 'block';
+          inputOutro.required = true;
+        } else {
+          groupOutro.style.display = 'none';
+          inputOutro.required = false;
+        }
+      });
+    }
+
     contactForm.addEventListener('submit', (e) => {
       e.preventDefault();
       
+      let subjectValue = subjectSelect.value;
+      if (subjectValue === 'outro') {
+        subjectValue = inputOutro.value || 'Outro';
+      }
+
       const leadData = {
         name: document.getElementById('nome').value,
         email: document.getElementById('contatoEmail').value,
         phone: document.getElementById('contatoTel').value,
-        subject: document.getElementById('assunto').value,
+        subject: subjectValue,
         message: document.getElementById('mensagem').value
       };
 
@@ -49,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Toast Success
       showToast('Mensagem enviada com sucesso! Nossa equipe entrará em contato.', 'success');
       contactForm.reset();
+      if(groupOutro) groupOutro.style.display = 'none';
     });
   }
 
