@@ -72,7 +72,14 @@ const DataManager = (() => {
     return null;
   }
 
-  function getSettings() { try{return JSON.parse(localStorage.getItem(KEYS.SETTINGS))||defaultSettings();}catch(e){return defaultSettings();} }
+  function getSettings() {
+    const defaults = defaultSettings();
+    const saved = localStorage.getItem(KEYS.SETTINGS);
+    if (saved) {
+      return { ...defaults, ...JSON.parse(saved) };
+    }
+    return defaults;
+  }
   function saveSettings(s) { localStorage.setItem(KEYS.SETTINGS,JSON.stringify(s)); }
 
   function login(u,pw) { if(u===ADMIN.username&&pw===ADMIN.password){sessionStorage.setItem(KEYS.AUTH,JSON.stringify({ok:true}));return true;}return false; }

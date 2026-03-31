@@ -99,7 +99,7 @@ body {
   margin: 0; padding: 0;
   display: flex; align-items: center; justify-content: center;
   overflow: hidden; color: white;
-  background: var(--blue-dark);
+  background: var(--blue-dark) url('../assets/images/hero.png') no-repeat center center/cover;
 }
 .hero-slides {
   position: absolute; top: 0; left: 0; 
