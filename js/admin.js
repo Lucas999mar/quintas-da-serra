@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const navItems = document.querySelectorAll('.nav-item');
-    const propTableBody = document.getElementById('prop-table-body');
-    const leadTableBody = document.getElementById('lead-table-body');
+    const propTableBody = document.getElementById('properties-list');
+    const leadTableBody = document.getElementById('leads-list');
     const statsCards = {
         total: document.getElementById('stat-total'),
         active: document.getElementById('stat-active'),
