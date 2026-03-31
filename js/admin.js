@@ -91,12 +91,13 @@ document.addEventListener('DOMContentLoaded', () => {
     /* --- Dashboard Rendering --- */
     function renderDashboard() {
         const stats = DataManager.getStats();
-        const leadStats = DataManager.getLeadStats();
+        // Use optional chaining or check for null as some methods might have been missing
+        const leadStats = DataManager.getLeadStats ? DataManager.getLeadStats() : { total: 0, new: 0 };
         
-        statsCards.total.textContent = stats.total;
-        statsCards.active.textContent = stats.active;
-        statsCards.lotes.textContent = stats.lotes;
-        statsCards.casas.textContent = stats.casas;
+        if(statsCards.total) statsCards.total.textContent = stats.total;
+        if(statsCards.active) statsCards.active.textContent = stats.active;
+        if(statsCards.lotes) statsCards.lotes.textContent = stats.lotes;
+        if(statsCards.casas) statsCards.casas.textContent = stats.casas;
         
         if(statsCards.leadsNew) statsCards.leadsNew.textContent = leadStats.new;
         if(statsCards.leadsTotal) statsCards.leadsTotal.textContent = leadStats.total;

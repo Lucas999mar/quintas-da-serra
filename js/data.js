@@ -138,7 +138,8 @@ const DataManager = (() => {
   function reset() { localStorage.setItem(KEYS.PROPERTIES,JSON.stringify(defaultProperties())); localStorage.setItem(KEYS.SETTINGS,JSON.stringify(defaultSettings())); }
 
   return { init, getAllProps, getActiveProps, getFeatured, getProp, saveProp, deleteProp, toggleStatus, toggleFeatured,
-    getSettings, saveSettings, login, logout, isLoggedIn, fmtPrice, fmtArea, fmtDate, getStats, reset, genId };
+    getSettings, saveSettings, login, logout, isLoggedIn, fmtPrice, fmtArea, fmtDate, getStats, reset, genId,
+    getAllLeads, saveLead, updateLeadStatus, deleteLead, getLeadStats };
 })();
 
 DataManager.init();
