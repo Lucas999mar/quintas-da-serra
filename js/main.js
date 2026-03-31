@@ -30,6 +30,39 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentSlide = 0;
   let slideInterval = null;
 
+  /* --- Contact Form --- */
+  const contactForm = document.getElementById('contactForm');
+  if (contactForm) {
+    contactForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const leadData = {
+        name: document.getElementById('nome').value,
+        email: document.getElementById('contatoEmail').value,
+        phone: document.getElementById('contatoTel').value,
+        subject: document.getElementById('assunto').value,
+        message: document.getElementById('mensagem').value
+      };
+
+      DataManager.saveLead(leadData);
+      
+      // Toast Success
+      showToast('Mensagem enviada com sucesso! Nossa equipe entrará em contato.', 'success');
+      contactForm.reset();
+    });
+  }
+
+  function showToast(msg, type) {
+    const toast = document.createElement('div');
+    toast.className = `toast show ${type}`;
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 4000);
+  }
+
   /* --- Load Settings --- */
   function loadSettings() {
     const s = DataManager.getSettings();

@@ -41,6 +41,7 @@
       <nav class="sidebar-nav">
         <div class="nav-item active" data-view="dashboard">Dashboard</div>
         <div class="nav-item" data-view="properties">Imóveis</div>
+        <div class="nav-item" data-view="leads">Leads / Contatos</div>
         <div class="nav-item" data-view="settings">Configurar Site</div>
         <a href="index.html" class="nav-item">Visualizar Site</a>
       </nav>
@@ -79,6 +80,17 @@
             </div>
           </div>
           
+          <div class="dashboard-grid" style="margin-top: 20px;">
+            <div class="stat-card" style="border-left: 4px solid #25d366;">
+              <div class="stat-value" id="stat-leads-new">0</div>
+              <div class="stat-label">Novos Leads</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="stat-leads-total">0</div>
+              <div class="stat-label">Total de Contatos</div>
+            </div>
+          </div>
+
           <div class="content-card">
             <div class="card-header">
               <h3>Ações Rápidas</h3>
@@ -98,20 +110,27 @@
               <h3>Lista de Imóveis</h3>
               <button class="btn-save" style="padding: 8px 15px; font-size: 13px;" id="add-prop-btn-2">+ Adicionar</button>
             </div>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Imóvel / Localização</th>
-                    <th>Tipo</th>
-                    <th>Preço</th>
-                    <th>Status</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody id="prop-table-body">
-                  <!-- JS Render -->
-                </tbody>
+            <div class="table-container">
+                <table id="properties-table">
+                  <thead><tr><th>Imóvel</th><th>Tipo</th><th>Preço</th><th>Stats</th><th>Ações</th></tr></thead>
+                  <tbody id="properties-list"></tbody>
+                </table>
+              </div>
+          </div>
+        </div>
+
+        <!-- LEADS VIEW -->
+        <div class="admin-view" id="view-leads" style="display: none;">
+          <div class="view-header">
+            <h3>Gestão de Leads / CRM</h3>
+            <p style="font-size: 0.9rem; color: var(--admin-text-light);">Acompanhe os contatos realizados pelo site e gerencie o status de cada um.</p>
+          </div>
+          
+          <div class="dashboard-section" style="margin-top: 0;">
+            <div class="table-container">
+              <table id="leads-table">
+                <thead><tr><th>Data</th><th>Cliente</th><th>Contato</th><th>Assunto</th><th>Status</th><th>Ações</th></tr></thead>
+                <tbody id="leads-list"></tbody>
               </table>
             </div>
           </div>

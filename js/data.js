@@ -1,6 +1,6 @@
 const DataManager = (() => {
   'use strict';
-  const KEYS = { PROPERTIES: 'qds_properties', SETTINGS: 'qds_settings', AUTH: 'qds_auth_session' };
+  const KEYS = { PROPERTIES: 'qds_properties', SETTINGS: 'qds_settings', AUTH: 'qds_auth_session', LEADS: 'qds_leads' };
   const ADMIN = { username: 'quintasdaserra', password: '@Qs198236' };
 
   function genId() { return 'p_' + Date.now().toString(36) + Math.random().toString(36).substr(2,6); }
@@ -81,6 +81,45 @@ const DataManager = (() => {
     return defaults;
   }
   function saveSettings(s) { localStorage.setItem(KEYS.SETTINGS,JSON.stringify(s)); }
+  
+  /* --- Lead Management --- */
+  function getAllLeads() { try { return JSON.parse(localStorage.getItem(KEYS.LEADS)||'[]'); } catch(e){return[];} }
+  
+  function saveLead(lead) {
+    const arr = getAllLeads();
+    const newLead = { 
+      id: genId(), 
+      status: 'Novo', 
+      createdAt: new Date().toISOString(),
+      ...lead 
+    };
+    arr.unshift(newLead);
+    localStorage.setItem(KEYS.LEADS, JSON.stringify(arr));
+    return newLead;
+  }
+
+  function updateLeadStatus(id, status) {
+    const arr = getAllLeads();
+    const lead = arr.find(l => l.id === id);
+    if(lead) {
+      lead.status = status;
+      localStorage.setItem(KEYS.LEADS, JSON.stringify(arr));
+      return lead;
+    }
+    return null;
+  }
+
+  function deleteLead(id) {
+    localStorage.setItem(KEYS.LEADS, JSON.stringify(getAllLeads().filter(l => l.id !== id)));
+  }
+
+  function getLeadStats() {
+    const arr = getAllLeads();
+    return {
+      total: arr.length,
+      new: arr.filter(l => l.status === 'Novo').length
+    };
+  }
 
   function login(u,pw) { if(u===ADMIN.username&&pw===ADMIN.password){sessionStorage.setItem(KEYS.AUTH,JSON.stringify({ok:true}));return true;}return false; }
   function logout() { sessionStorage.removeItem(KEYS.AUTH); }

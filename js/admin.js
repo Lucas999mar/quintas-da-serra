@@ -9,16 +9,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const views = {
         dashboard: document.getElementById('view-dashboard'),
         properties: document.getElementById('view-properties'),
+        leads: document.getElementById('view-leads'),
         settings: document.getElementById('view-settings')
     };
 
     const navItems = document.querySelectorAll('.nav-item');
     const propTableBody = document.getElementById('prop-table-body');
+    const leadTableBody = document.getElementById('lead-table-body');
     const statsCards = {
         total: document.getElementById('stat-total'),
         active: document.getElementById('stat-active'),
         lotes: document.getElementById('stat-lotes'),
-        casas: document.getElementById('stat-casas')
+        casas: document.getElementById('stat-casas'),
+        leadsNew: document.getElementById('stat-leads-new'),
+        leadsTotal: document.getElementById('stat-leads-total')
     };
 
     const propModal = document.getElementById('prop-modal');
@@ -79,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (view === 'dashboard') renderDashboard();
             if (view === 'properties') renderPropertiesList();
+            if (view === 'leads') renderLeadsList();
             if (view === 'settings') renderSettings();
         });
     });
@@ -86,10 +91,15 @@ document.addEventListener('DOMContentLoaded', () => {
     /* --- Dashboard Rendering --- */
     function renderDashboard() {
         const stats = DataManager.getStats();
+        const leadStats = DataManager.getLeadStats();
+        
         statsCards.total.textContent = stats.total;
         statsCards.active.textContent = stats.active;
         statsCards.lotes.textContent = stats.lotes;
         statsCards.casas.textContent = stats.casas;
+        
+        if(statsCards.leadsNew) statsCards.leadsNew.textContent = leadStats.new;
+        if(statsCards.leadsTotal) statsCards.leadsTotal.textContent = leadStats.total;
     }
 
     /* --- Properties List Rendering --- */
@@ -377,5 +387,71 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* --- Init --- */
+    /* --- Leads List Rendering --- */
+    function renderLeadsList() {
+        const leads = DataManager.getAllLeads();
+        const list = document.getElementById('leads-list');
+        if(!list) return;
+
+        list.innerHTML = leads.map(l => {
+            const date = DataManager.fmtDate(l.createdAt);
+            const statusClass = l.status === 'Novo' ? 'status-active' : (l.status === 'Finalizado' ? 'status-inactive' : 'status-pending');
+            
+            return `
+                <tr>
+                    <td>${date}</td>
+                    <td><strong>${l.name}</strong></td>
+                    <td>${l.phone}<br><small>${l.email}</small></td>
+                    <td>${l.subject}</td>
+                    <td>
+                        <select onchange="updateLeadStatus('${l.id}', this.value)" style="padding:4px; border-radius:4px; font-size:12px; border:1px solid #ddd;">
+                            <option value="Novo" ${l.status === 'Novo' ? 'selected' : ''}>Novo</option>
+                            <option value="Em Atendimento" ${l.status === 'Em Atendimento' ? 'selected' : ''}>Em Atendimento</option>
+                            <option value="Finalizado" ${l.status === 'Finalizado' ? 'selected' : ''}>Finalizado</option>
+                        </select>
+                    </td>
+                    <td>
+                        <div class="actions">
+                            <button class="btn-icon" style="background:#25d366; color:white; font-size:16px;" title="WhatsApp" onclick="whatsappLead('${l.id}')">📲</button>
+                            <button class="btn-icon" style="background:#f1f5f9; color:#475569;" title="Ver Mensagem" onclick="alert('Mensagem de ${l.name}:\\n\\n${l.message}')">👁️</button>
+                            <button class="btn-icon btn-delete" title="Excluir" onclick="deleteLead('${l.id}')">🗑</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    window.updateLeadStatus = (id, status) => {
+        DataManager.updateLeadStatus(id, status);
+        renderLeadsList();
+        renderDashboard();
+    };
+
+    window.deleteLead = (id) => {
+        if(confirm('Deseja excluir este lead permanentemente?')) {
+            DataManager.deleteLead(id);
+            renderLeadsList();
+            renderDashboard();
+        }
+    };
+
+    window.whatsappLead = (id) => {
+        const leads = DataManager.getAllLeads();
+        const lead = leads.find(l => l.id === id);
+        if(!lead) return;
+
+        // Limpar o número (manter apenas dígitos)
+        const purePhone = lead.phone.replace(/\D/g, '');
+        // Se o número não começar com 55 (Brasil) e tiver 10 ou 11 dígitos, adicionar 55
+        let finalPhone = purePhone;
+        if (purePhone.length <= 11 && !purePhone.startsWith('55')) {
+            finalPhone = '55' + purePhone;
+        }
+
+        const message = encodeURIComponent(`Olá ${lead.name}, vi seu contato no site Quintas Da Serra sobre "${lead.subject}". Como posso ajudar?`);
+        window.open(`https://wa.me/${finalPhone}?text=${message}`, '_blank');
+    };
+
     checkAuth();
 });
