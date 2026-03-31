@@ -387,78 +387,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /* --- Init --- */
-    /* --- Leads List Rendering --- */
-    function renderLeadsList() {
-        const leads = DataManager.getAllLeads();
-        const list = document.getElementById('leads-list');
-        if(!list) return;
-
-        list.innerHTML = leads.map(l => {
-            const date = DataManager.fmtDate(l.createdAt);
-            
-            return `
-                <tr data-id="${l.id}">
-                    <td>${date}</td>
-                    <td><strong>${l.name}</strong></td>
-                    <td>${l.phone}<br><small>${l.email}</small></td>
-                    <td>${l.subject}</td>
-                    <td>
-                        <select class="lead-status-select" style="padding:4px; border-radius:4px; font-size:12px; border:1px solid #ddd;">
-                            <option value="Novo" ${l.status === 'Novo' ? 'selected' : ''}>Novo</option>
-                            <option value="Em Atendimento" ${l.status === 'Em Atendimento' ? 'selected' : ''}>Em Atendimento</option>
-                            <option value="Finalizado" ${l.status === 'Finalizado' ? 'selected' : ''}>Finalizado</option>
-                        </select>
-                    </td>
-                    <td>
-                        <div class="actions">
-                            <button class="btn-icon action-wa" style="background:#25d366; color:white; font-size:16px;" title="WhatsApp">📲</button>
-                            <button class="btn-icon action-view" style="background:#f1f5f9; color:#475569;" title="Ver Mensagem">👁️</button>
-                            <button class="btn-icon btn-delete action-delete" title="Excluir">🗑</button>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-    }
-
-    // Event Delegation for Lead Actions
-    const leadsList = document.getElementById('leads-list');
-    if (leadsList) {
-        leadsList.addEventListener('click', (e) => {
-            const row = e.target.closest('tr');
-            if (!row) return;
-            const id = row.dataset.id;
-
-            if (e.target.closest('.action-wa')) {
-                whatsappLead(id);
-            } else if (e.target.closest('.action-view')) {
-                openLeadModal(id);
-            } else if (e.target.closest('.action-delete')) {
-                deleteLead(id);
-            }
-        });
-
-        leadsList.addEventListener('change', (e) => {
-            if (e.target.classList.contains('lead-status-select')) {
-                const row = e.target.closest('tr');
-                if (row) {
-                    DataManager.updateLeadStatus(row.dataset.id, e.target.value);
-                    renderDashboard();
-                }
-            }
-        });
-    }
-
-    const deleteLead = (id) => {
+    /* --- Lead Action Functions (defined first for hoisting) --- */
+    function handleDeleteLead(id) {
         if(confirm('Deseja excluir este lead permanentemente?')) {
             DataManager.deleteLead(id);
             renderLeadsList();
             renderDashboard();
         }
-    };
+    }
 
-    const whatsappLead = (id) => {
+    function handleWhatsappLead(id) {
         const leads = DataManager.getAllLeads();
         const lead = leads.find(l => l.id === id);
         if(!lead) return;
@@ -469,11 +407,11 @@ document.addEventListener('DOMContentLoaded', () => {
             finalPhone = '55' + purePhone;
         }
 
-        const message = encodeURIComponent(`Olá ${lead.name}, vi seu contato no site Quintas Da Serra sobre "${lead.subject}". Como posso ajudar?`);
-        window.open(`https://wa.me/${finalPhone}?text=${message}`, '_blank');
-    };
+        const message = encodeURIComponent('Olá ' + lead.name + ', vi seu contato no site Quintas Da Serra sobre "' + lead.subject + '". Como posso ajudar?');
+        window.open('https://wa.me/' + finalPhone + '?text=' + message, '_blank');
+    }
 
-    const openLeadModal = (id) => {
+    function handleViewLead(id) {
         const leads = DataManager.getAllLeads();
         const lead = leads.find(l => l.id === id);
         if(!lead) return;
@@ -483,27 +421,67 @@ document.addEventListener('DOMContentLoaded', () => {
         const btnWa = document.getElementById('btn-modal-wa');
 
         if(content) {
-            content.innerHTML = `
-                <div style="display: grid; gap: 15px; grid-template-columns: 1fr 1fr; margin-bottom: 20px;">
-                    <div><strong>Nome:</strong><br>${lead.name}</div>
-                    <div><strong>Data:</strong><br>${DataManager.fmtDate(lead.createdAt)}</div>
-                    <div><strong>WhatsApp:</strong><br>${lead.phone}</div>
-                    <div><strong>E-mail:</strong><br>${lead.email}</div>
-                    <div style="grid-column: span 2;"><strong>Assunto:</strong><br>${lead.subject}</div>
-                </div>
-                <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid var(--admin-primary);">
-                    <strong>Mensagem:</strong><br>
-                    <p style="margin-top: 10px; white-space: pre-wrap; line-height: 1.6;">${lead.message}</p>
-                </div>
-            `;
+            content.innerHTML = '<div style="display: grid; gap: 15px; grid-template-columns: 1fr 1fr; margin-bottom: 20px;">'
+                + '<div><strong>Nome:</strong><br>' + lead.name + '</div>'
+                + '<div><strong>Data:</strong><br>' + DataManager.fmtDate(lead.createdAt) + '</div>'
+                + '<div><strong>WhatsApp:</strong><br>' + lead.phone + '</div>'
+                + '<div><strong>E-mail:</strong><br>' + lead.email + '</div>'
+                + '<div style="grid-column: span 2;"><strong>Assunto:</strong><br>' + lead.subject + '</div>'
+                + '</div>'
+                + '<div style="background: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid var(--admin-primary);">'
+                + '<strong>Mensagem:</strong><br>'
+                + '<p style="margin-top: 10px; white-space: pre-wrap; line-height: 1.6;">' + lead.message + '</p>'
+                + '</div>';
         }
 
         if(btnWa) {
-            btnWa.onclick = () => whatsappLead(id);
+            btnWa.onclick = function() { handleWhatsappLead(id); };
         }
 
         if(modal) modal.classList.add('active');
-    };
+    }
+
+    // Expose on window for global access
+    window.handleDeleteLead = handleDeleteLead;
+    window.handleWhatsappLead = handleWhatsappLead;
+    window.handleViewLead = handleViewLead;
+
+    /* --- Leads List Rendering --- */
+    function renderLeadsList() {
+        const leads = DataManager.getAllLeads();
+        const list = document.getElementById('leads-list');
+        if(!list) return;
+
+        if(leads.length === 0) {
+            list.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#94a3b8;">Nenhum contato recebido ainda.</td></tr>';
+            return;
+        }
+
+        list.innerHTML = leads.map(function(l) {
+            var date = DataManager.fmtDate(l.createdAt);
+            
+            return '<tr>'
+                + '<td>' + date + '</td>'
+                + '<td><strong>' + l.name + '</strong></td>'
+                + '<td>' + l.phone + '<br><small>' + l.email + '</small></td>'
+                + '<td>' + l.subject + '</td>'
+                + '<td>'
+                + '<select onchange="DataManager.updateLeadStatus(\'' + l.id + '\', this.value)" style="padding:4px; border-radius:4px; font-size:12px; border:1px solid #ddd;">'
+                + '<option value="Novo"' + (l.status === 'Novo' ? ' selected' : '') + '>Novo</option>'
+                + '<option value="Em Atendimento"' + (l.status === 'Em Atendimento' ? ' selected' : '') + '>Em Atendimento</option>'
+                + '<option value="Finalizado"' + (l.status === 'Finalizado' ? ' selected' : '') + '>Finalizado</option>'
+                + '</select>'
+                + '</td>'
+                + '<td>'
+                + '<div class="actions">'
+                + '<button class="btn-icon" style="background:#25d366; color:white; font-size:16px;" title="WhatsApp" onclick="handleWhatsappLead(\'' + l.id + '\')">📲</button>'
+                + '<button class="btn-icon" style="background:#f1f5f9; color:#475569;" title="Ver Mensagem" onclick="handleViewLead(\'' + l.id + '\')">👁️</button>'
+                + '<button class="btn-icon" style="background:#fbeaea; color:#8b1a1a;" title="Excluir" onclick="handleDeleteLead(\'' + l.id + '\')">🗑</button>'
+                + '</div>'
+                + '</td>'
+                + '</tr>';
+        }).join('');
+    }
 
     checkAuth();
 });
