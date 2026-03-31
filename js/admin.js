@@ -388,12 +388,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* --- Lead Action Functions (defined first for hoisting) --- */
+    let leadToDeleteId = null;
+
     function handleDeleteLead(id) {
-        if(confirm('Deseja excluir este lead permanentemente?')) {
-            DataManager.deleteLead(id);
-            renderLeadsList();
-            renderDashboard();
-        }
+        leadToDeleteId = id;
+        const modal = document.getElementById('delete-confirm-modal');
+        if(modal) modal.classList.add('active');
     }
 
     function handleWhatsappLead(id) {
@@ -481,6 +481,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 + '</td>'
                 + '</tr>';
         }).join('');
+    }
+
+    /* --- Modal Event Listeners --- */
+    const btnCloseLeadModal = document.getElementById('btn-close-lead-modal');
+    if (btnCloseLeadModal) {
+        btnCloseLeadModal.addEventListener('click', function() {
+            document.getElementById('lead-modal').classList.remove('active');
+        });
+    }
+
+    const btnCancelDelete = document.getElementById('btn-cancel-delete');
+    if (btnCancelDelete) {
+        btnCancelDelete.addEventListener('click', function() {
+            leadToDeleteId = null;
+            document.getElementById('delete-confirm-modal').classList.remove('active');
+        });
+    }
+
+    const btnConfirmDelete = document.getElementById('btn-confirm-delete');
+    if (btnConfirmDelete) {
+        btnConfirmDelete.addEventListener('click', function() {
+            if (leadToDeleteId) {
+                DataManager.deleteLead(leadToDeleteId);
+                renderLeadsList();
+                renderDashboard();
+                leadToDeleteId = null;
+                document.getElementById('delete-confirm-modal').classList.remove('active');
+            }
+        });
     }
 
     checkAuth();
