@@ -396,16 +396,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         list.innerHTML = leads.map(l => {
             const date = DataManager.fmtDate(l.createdAt);
-            const statusClass = l.status === 'Novo' ? 'status-active' : (l.status === 'Finalizado' ? 'status-inactive' : 'status-pending');
             
             return `
-                <tr>
+                <tr data-id="${l.id}">
                     <td>${date}</td>
                     <td><strong>${l.name}</strong></td>
                     <td>${l.phone}<br><small>${l.email}</small></td>
                     <td>${l.subject}</td>
                     <td>
-                        <select onchange="updateLeadStatus('${l.id}', this.value)" style="padding:4px; border-radius:4px; font-size:12px; border:1px solid #ddd;">
+                        <select class="lead-status-select" style="padding:4px; border-radius:4px; font-size:12px; border:1px solid #ddd;">
                             <option value="Novo" ${l.status === 'Novo' ? 'selected' : ''}>Novo</option>
                             <option value="Em Atendimento" ${l.status === 'Em Atendimento' ? 'selected' : ''}>Em Atendimento</option>
                             <option value="Finalizado" ${l.status === 'Finalizado' ? 'selected' : ''}>Finalizado</option>
@@ -413,9 +412,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     </td>
                     <td>
                         <div class="actions">
-                            <button class="btn-icon" style="background:#25d366; color:white; font-size:16px;" title="WhatsApp" onclick="whatsappLead('${l.id}')">📲</button>
-                            <button class="btn-icon" style="background:#f1f5f9; color:#475569;" title="Ver Mensagem" onclick="viewLeadMessage('${l.id}')">👁️</button>
-                            <button class="btn-icon btn-delete" title="Excluir" onclick="deleteLead('${l.id}')">🗑</button>
+                            <button class="btn-icon action-wa" style="background:#25d366; color:white; font-size:16px;" title="WhatsApp">📲</button>
+                            <button class="btn-icon action-view" style="background:#f1f5f9; color:#475569;" title="Ver Mensagem">👁️</button>
+                            <button class="btn-icon btn-delete action-delete" title="Excluir">🗑</button>
                         </div>
                     </td>
                 </tr>
@@ -423,13 +422,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     }
 
-    window.updateLeadStatus = (id, status) => {
-        DataManager.updateLeadStatus(id, status);
-        renderLeadsList();
-        renderDashboard();
-    };
+    // Event Delegation for Lead Actions
+    const leadsList = document.getElementById('leads-list');
+    if (leadsList) {
+        leadsList.addEventListener('click', (e) => {
+            const row = e.target.closest('tr');
+            if (!row) return;
+            const id = row.dataset.id;
 
-    window.deleteLead = (id) => {
+            if (e.target.closest('.action-wa')) {
+                whatsappLead(id);
+            } else if (e.target.closest('.action-view')) {
+                openLeadModal(id);
+            } else if (e.target.closest('.action-delete')) {
+                deleteLead(id);
+            }
+        });
+
+        leadsList.addEventListener('change', (e) => {
+            if (e.target.classList.contains('lead-status-select')) {
+                const row = e.target.closest('tr');
+                if (row) {
+                    DataManager.updateLeadStatus(row.dataset.id, e.target.value);
+                    renderDashboard();
+                }
+            }
+        });
+    }
+
+    const deleteLead = (id) => {
         if(confirm('Deseja excluir este lead permanentemente?')) {
             DataManager.deleteLead(id);
             renderLeadsList();
@@ -437,14 +458,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    window.whatsappLead = (id) => {
+    const whatsappLead = (id) => {
         const leads = DataManager.getAllLeads();
         const lead = leads.find(l => l.id === id);
         if(!lead) return;
 
-        // Limpar o número (manter apenas dígitos)
         const purePhone = lead.phone.replace(/\D/g, '');
-        // Se o número não começar com 55 (Brasil) e tiver 10 ou 11 dígitos, adicionar 55
         let finalPhone = purePhone;
         if (purePhone.length <= 11 && !purePhone.startsWith('55')) {
             finalPhone = '55' + purePhone;
@@ -454,13 +473,36 @@ document.addEventListener('DOMContentLoaded', () => {
         window.open(`https://wa.me/${finalPhone}?text=${message}`, '_blank');
     };
 
-    window.viewLeadMessage = (id) => {
+    const openLeadModal = (id) => {
         const leads = DataManager.getAllLeads();
         const lead = leads.find(l => l.id === id);
         if(!lead) return;
-        
-        // Usar um alert limpo ou modal
-        alert(`Mensagem de: ${lead.name}\nAssunto: ${lead.subject}\n\n"${lead.message}"`);
+
+        const content = document.getElementById('lead-details-content');
+        const modal = document.getElementById('lead-modal');
+        const btnWa = document.getElementById('btn-modal-wa');
+
+        if(content) {
+            content.innerHTML = `
+                <div style="display: grid; gap: 15px; grid-template-columns: 1fr 1fr; margin-bottom: 20px;">
+                    <div><strong>Nome:</strong><br>${lead.name}</div>
+                    <div><strong>Data:</strong><br>${DataManager.fmtDate(lead.createdAt)}</div>
+                    <div><strong>WhatsApp:</strong><br>${lead.phone}</div>
+                    <div><strong>E-mail:</strong><br>${lead.email}</div>
+                    <div style="grid-column: span 2;"><strong>Assunto:</strong><br>${lead.subject}</div>
+                </div>
+                <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid var(--admin-primary);">
+                    <strong>Mensagem:</strong><br>
+                    <p style="margin-top: 10px; white-space: pre-wrap; line-height: 1.6;">${lead.message}</p>
+                </div>
+            `;
+        }
+
+        if(btnWa) {
+            btnWa.onclick = () => whatsappLead(id);
+        }
+
+        if(modal) modal.classList.add('active');
     };
 
     checkAuth();
