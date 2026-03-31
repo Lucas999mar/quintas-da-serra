@@ -26,6 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalOverlay = document.getElementById('prop-modal');
   const modalClose = document.getElementById('modal-close');
   
+  const heroSlides = document.getElementById('hero-slides');
+  let currentSlide = 0;
+  let slideInterval = null;
+
   /* --- Load Settings --- */
   function loadSettings() {
     const s = DataManager.getSettings();
@@ -34,8 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if(heroBtn) heroBtn.textContent = s.heroBtn;
     
     if(aboutTitle) aboutTitle.textContent = s.aboutTitle;
-    if(aboutText) aboutText.innerHTML = s.aboutText.split('\n').map(p => '<p>'+p+'</p>').join('');
-    if(missionText) missionText.innerHTML = '<p>'+s.missionText+'</p>';
+    if(aboutText) aboutText.innerHTML = (s.aboutText || '').split('\n').map(p => '<p>'+p+'</p>').join('');
+    if(missionText) missionText.innerHTML = '<p>'+(s.missionText || '')+'</p>';
     
     phoneEls.forEach(el => el.textContent = s.phone);
     emailEls.forEach(el => el.textContent = s.email);
@@ -45,6 +49,29 @@ document.addEventListener('DOMContentLoaded', () => {
     fbLinks.forEach(el => el.href = s.facebook);
     igLinks.forEach(el => el.href = s.instagram);
     if(wpLink) wpLink.href = 'https://wa.me/' + s.whatsapp;
+
+    renderHeroSlider(s.heroImages || []);
+  }
+
+  function renderHeroSlider(images) {
+    if(!heroSlides || !images.length) return;
+    heroSlides.innerHTML = images.map((img, i) => `
+      <div class="hero-slide ${i === 0 ? 'active' : ''}" style="background-image: url('${img}')"></div>
+    `).join('');
+    
+    startHeroSlider();
+  }
+
+  function startHeroSlider() {
+    if(slideInterval) clearInterval(slideInterval);
+    const slides = document.querySelectorAll('.hero-slide');
+    if(slides.length <= 1) return;
+
+    slideInterval = setInterval(() => {
+      slides[currentSlide].classList.remove('active');
+      currentSlide = (currentSlide + 1) % slides.length;
+      slides[currentSlide].classList.add('active');
+    }, 6000);
   }
 
   /* --- Render Featured Strip --- */

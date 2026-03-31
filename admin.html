@@ -176,6 +176,24 @@
               </div>
             </div>
             
+            <div class="settings-section">
+              <h3>Slider do Hero (Carrossel de Fundo)</h3>
+              <p style="font-size: 0.9rem; color: var(--admin-text-light); margin-bottom: 15px;">Adicione ou remova imagens que aparecem no fundo da página inicial.</p>
+              
+              <div class="upload-container" style="border: 2px dashed #ddd; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 15px;">
+                <input type="file" id="hero-upload" multiple accept="image/*" style="display: none;">
+                <label for="hero-upload" style="cursor: pointer; display: block;">
+                  <span style="font-size: 24px;">🖼️</span><br>
+                  <strong>Enviar Nova Imagem para o Hero</strong><br>
+                  <small>Clique aqui para selecionar arquivos</small>
+                </label>
+              </div>
+              
+              <div id="admin-hero-list" class="admin-gallery-list">
+                <!-- JS Render -->
+              </div>
+            </div>
+
             <button type="submit" class="btn-save">Salvar Todas as Alterações</button>
           </form>
         </div>

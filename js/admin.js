@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentEditingId = null;
     let currentImages = [];
+    let currentHeroImages = [];
 
     /* --- Auth Check --- */
     function checkAuth() {
@@ -291,6 +292,63 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('s-email').value = s.email;
         document.getElementById('s-address').value = s.address;
         document.getElementById('s-footer').value = s.footer;
+
+        currentHeroImages = [...(s.heroImages || [])];
+        renderAdminHeroList();
+    }
+
+    function renderAdminHeroList() {
+        const list = document.getElementById('admin-hero-list');
+        if(!list) return;
+        list.innerHTML = currentHeroImages.map((img, index) => `
+            <div class="gallery-item-admin">
+                <img src="${img}" alt="Hero Thumbnail">
+                <button type="button" class="gallery-item-remove" onclick="removeHeroImage(${index})">×</button>
+            </div>
+        `).join('');
+    }
+
+    window.removeHeroImage = (index) => {
+        currentHeroImages.splice(index, 1);
+        renderAdminHeroList();
+    };
+
+    const heroUpload = document.getElementById('hero-upload');
+    if (heroUpload) {
+        heroUpload.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        const maxSide = 1600; // Larger for hero backgrounds
+
+                        if (width > height && width > maxSide) {
+                            height *= maxSide / width;
+                            width = maxSide;
+                        } else if (height > maxSide) {
+                            width *= maxSide / height;
+                            height = maxSide;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+                        currentHeroImages.push(dataUrl);
+                        renderAdminHeroList();
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+            heroUpload.value = '';
+        });
     }
 
     const settingsForm = document.getElementById('settings-form');
@@ -309,6 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 email: document.getElementById('s-email').value,
                 address: document.getElementById('s-address').value,
                 footer: document.getElementById('s-footer').value,
+                heroImages: currentHeroImages,
                 facebook: DataManager.getSettings().facebook,
                 instagram: DataManager.getSettings().instagram
             };

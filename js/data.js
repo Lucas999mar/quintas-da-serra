@@ -19,7 +19,8 @@ const DataManager = (() => {
       whatsapp: '5522999999999',
       footer: '© 2026 Quintas Da Serra Macaé-RJ. Todos os direitos reservados.',
       facebook: 'https://facebook.com/quintasdaserra',
-      instagram: 'https://instagram.com/quintasdaserra'
+      instagram: 'https://instagram.com/quintasdaserra',
+      heroImages: ['assets/images/hero-bg.png', 'assets/images/hero-slide-2.png']
     };
   }
 
