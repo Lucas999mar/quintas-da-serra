@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Quintas Da Serra Macaé-RJ</title>
+  <link rel="stylesheet" href="css/admin.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- LOGIN SECTION -->
+  <section class="login-page" id="login-section">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-logo">Quintas Da Serra</div>
+        <p style="color: #666; font-size: 14px; margin-top: 5px;">Painel Administrativo</p>
+      </div>
+      <form class="login-form" id="login-form">
+        <div class="form-group">
+          <label for="username">Usuário</label>
+          <input type="text" id="username" required value="admin">
+        </div>
+        <div class="form-group">
+          <label for="password">Senha</label>
+          <input type="password" id="password" required value="admin123">
+        </div>
+        <button type="submit" class="login-btn">Acessar Painel</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- DASHBOARD LAYOUT -->
+  <div class="admin-layout" id="admin-layout">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div style="font-family: 'Playfair Display', serif; font-size: 20px;">Quintas Serra</div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-item active" data-view="dashboard">Dashboard</div>
+        <div class="nav-item" data-view="properties">Imóveis</div>
+        <div class="nav-item" data-view="settings">Configurar Site</div>
+        <a href="index.html" class="nav-item">Visualizar Site</a>
+      </nav>
+      <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+        <button id="logout-btn" style="background: none; border: none; color: rgba(255,255,255,0.6); cursor: pointer; font-size: 14px;">Sair do Sistema</button>
+      </div>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="main-content">
+      <header class="main-header">
+        <h2 id="view-title">Bem-vindo, Administrador</h2>
+        <div style="font-size: 14px; color: var(--admin-text-light);">Logado em: Macaé-RJ</div>
+      </header>
+
+      <div class="view-container">
+        
+        <!-- DASHBOARD VIEW -->
+        <div id="view-dashboard">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Total de Imóveis</div>
+              <div class="stat-value" id="stat-total">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Ativos no Site</div>
+              <div class="stat-value" id="stat-active">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Lotes/Terrenos</div>
+              <div class="stat-value" id="stat-lotes">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Casas Pronto</div>
+              <div class="stat-value" id="stat-casas">0</div>
+            </div>
+          </div>
+          
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Ações Rápidas</h3>
+            </div>
+            <div style="padding: 30px; display: flex; gap: 20px;">
+              <button class="btn-save" id="add-prop-btn" style="background: var(--admin-primary);">+ Novo Imóvel</button>
+              <button class="btn-save" onclick="document.querySelector('[data-view=settings]').click()" style="background: var(--admin-secondary);">Editar Cabeçalho</button>
+              <button class="btn-save" onclick="DataManager.reset(); location.reload();" style="background: #666;">Resetar para Padrão</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROPERTIES VIEW -->
+        <div id="view-properties" style="display: none;">
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Lista de Imóveis</h3>
+              <button class="btn-save" style="padding: 8px 15px; font-size: 13px;" id="add-prop-btn-2">+ Adicionar</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Imóvel / Localização</th>
+                    <th>Tipo</th>
+                    <th>Preço</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="prop-table-body">
+                  <!-- JS Render -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- SETTINGS VIEW -->
+        <div id="view-settings" style="display: none;">
+          <form class="content-card" id="settings-form" style="padding: 30px;">
+            <div class="settings-section">
+              <h3>Conteúdo Principal (Landing Page)</h3>
+              <div class="modal-grid">
+                <div class="form-group">
+                  <label class="form-label">Título Hero</label>
+                  <input type="text" id="s-hero-title" class="form-input">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Texto do Botão Hero</label>
+                  <input type="text" id="s-hero-btn" class="form-input">
+                </div>
+                <div class="form-group full-width">
+                  <label class="form-label">Subtítulo Hero</label>
+                  <textarea id="s-hero-subtitle" class="form-input form-textarea" style="height: 60px;"></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Título "Sobre"</label>
+                  <input type="text" id="s-about-title" class="form-input">
+                </div>
+                <div class="form-group full-width">
+                  <label class="form-label">Texto Principal "Sobre"</label>
+                  <textarea id="s-about-text" class="form-input form-textarea"></textarea>
+                </div>
+                <div class="form-group full-width">
+                  <label class="form-label">Frase de Missão (Destaque)</label>
+                  <textarea id="s-mission" class="form-input form-textarea" style="height: 60px;"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-section">
+              <h3>Contatos e Redes Sociais</h3>
+              <div class="modal-grid">
+                <div class="form-group">
+                  <label class="form-label">WhatsApp (Apenas números com DDD)</label>
+                  <input type="text" id="s-whatsapp" class="form-input" placeholder="Ex: 5522999999999">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Telefone de Exibição</label>
+                  <input type="text" id="s-phone" class="form-input">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">E-mail de Contato</label>
+                  <input type="email" id="s-email" class="form-input">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Endereço Físico</label>
+                  <input type="text" id="s-address" class="form-input">
+                </div>
+                <div class="form-group full-width">
+                  <label class="form-label">Texto Rodapé (Footer)</label>
+                  <input type="text" id="s-footer" class="form-input">
+                </div>
+              </div>
+            </div>
+            
+            <button type="submit" class="btn-save">Salvar Todas as Alterações</button>
+          </form>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ADMIN PROPERTY MODAL -->
+  <div class="admin-modal" id="prop-modal">
+    <div class="modal-box">
+      <h2 id="modal-title-admin" style="margin-bottom: 25px;">Editar Imóvel</h2>
+      <form id="prop-form">
+        <div class="modal-grid">
+          <div class="form-group full-width">
+            <label class="form-label">Título do Imóvel</label>
+            <input type="text" id="p-title" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tipo</label>
+            <select id="p-type" class="form-input">
+              <option value="lote">Lote / Terreno</option>
+              <option value="casa">Casa / Sobrado</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Preço (R$)</label>
+            <input type="number" id="p-price" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Área (m²)</label>
+            <input type="number" id="p-area" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Localização (Quadra/Lote)</label>
+            <input type="text" id="p-location" class="form-input" required>
+          </div>
+          
+          <!-- Casa Only Fields -->
+          <div class="form-group house-only">
+            <label class="form-label">Quartos</label>
+            <input type="number" id="p-bedrooms" class="form-input">
+          </div>
+          <div class="form-group house-only">
+            <label class="form-label">Banheiros</label>
+            <input type="number" id="p-bathrooms" class="form-input">
+          </div>
+          <div class="form-group house-only">
+            <label class="form-label">Vagas Garagem</label>
+            <input type="number" id="p-garages" class="form-input">
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label">Descrição Detalhada</label>
+            <textarea id="p-desc" class="form-input form-textarea" required></textarea>
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label">Características (separadas por vírgula)</label>
+            <input type="text" id="p-features" class="form-input" placeholder="Piscina, Churrasqueira, Vista para Serra...">
+          </div>
+
+          <!-- Gallery and Video Support -->
+          <div class="form-group full-width">
+            <label class="form-label">URL do Vídeo (YouTube/Vimeo)</label>
+            <input type="text" id="p-video" class="form-input" placeholder="https://www.youtube.com/watch?v=...">
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+              Galeria de Imagens
+              <span style="font-size: 11px; font-weight: normal; color: var(--admin-text-light);">Adicione URLs de imagens</span>
+            </label>
+            <div class="upload-container" style="border: 2px dashed var(--admin-text-light); border-radius: 8px; padding: 20px; text-align: center; background: #fafafa; transition: 0.3s; margin-bottom: 15px;">
+              <input type="file" id="p-upload-image" multiple accept="image/*" style="display: none;">
+              <label for="p-upload-image" style="cursor: pointer; display: block;">
+                <div style="font-size: 24px; margin-bottom: 10px;">📤</div>
+                <div style="font-weight: 600; color: var(--admin-sidebar);">Clique para fazer Upload</div>
+                <div style="font-size: 12px; color: var(--admin-text-light);">Você pode selecionar várias imagens de uma vez</div>
+              </label>
+            </div>
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+              <input type="text" id="p-new-image" class="form-input" placeholder="Ou cole a URL de uma imagem...">
+              <button type="button" id="add-image-btn" class="btn-save" style="padding: 8px 15px; background: var(--admin-secondary); flex-shrink: 0;">+</button>
+            </div>
+            <div id="admin-gallery-list" class="admin-gallery-list">
+              <!-- JS Render -->
+            </div>
+          </div>
+        </div>
+        
+        <div style="margin-top: 30px; display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn-cancel" id="cancel-prop-btn">Cancelar</button>
+          <button type="submit" class="btn-save">Salvar Imóvel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/admin.js"></script>
+  <script>
+    // Link the second add button
+    document.getElementById('add-prop-btn-2').addEventListener('click', () => {
+      document.getElementById('add-prop-btn').click();
+    });
+  </script>
+</body>
+</html>

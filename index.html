@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quintas Da Serra Macaé-RJ | Exclusividade em Meio à Natureza</title>
+  <meta name="description" content="Lotes e casas no Quintas Da Serra, condomínio residencial cercado pela beleza natural da Serra Macaense. Conforto, segurança e exclusividade.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon">Q</div>
+      <div class="nav-logo-text">
+        <span class="nav-logo-title">Quintas Da Serra</span>
+        <span class="nav-logo-sub">Macaé-RJ</span>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="#inicio">Início</a>
+      <a href="#destaques">Destaques</a>
+      <a href="#imoveis">Imóveis</a>
+      <a href="#sobre">O Condomínio</a>
+      <a href="#contato">Contato</a>
+      <a href="admin.html" class="nav-cta">Área Restrita</a>
+    </div>
+    <div class="nav-hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="inicio" class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-particles">
+      <!-- Generated via CSS animation logic / multiple elements if desired -->
+    </div>
+    
+    <div class="hero-content">
+      <div class="hero-badge" id="hero-badge">Lotes e Casas de Alto Padrão</div>
+      <h1 class="hero-title" id="hero-title">Viva com Exclusividade em <span>Macaé</span></h1>
+      <p class="hero-subtitle" id="hero-subtitle">Descubra lotes e casas no Quintas Da Serra — um condomínio residencial cercado pela beleza natural da Serra Macaense.</p>
+      
+      <div class="hero-actions">
+        <a href="#imoveis" class="btn-primary" id="hero-btn">
+          Conheça Nossos Imóveis
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <a href="#sobre" class="btn-outline">Ver Condomínio</a>
+      </div>
+      
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-number">+100</div>
+          <div class="hero-stat-label">Lotes e Casas</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-number">24h</div>
+          <div class="hero-stat-label">Segurança</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-number">100%</div>
+          <div class="hero-stat-label">Contato com Natureza</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="hero-scroll" onclick="document.getElementById('destaques').scrollIntoView()">
+      Deslize para baixo
+      <span></span>
+    </div>
+  </section>
+
+  <!-- DESTAQUES -->
+  <section id="destaques" class="featured-strip">
+    <div class="featured-strip-inner">
+      <div class="featured-strip-label">Imóveis em Destaque</div>
+      <div class="featured-cards-scroll" id="featured-scroll">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- CATÁLOGO DE IMÓVEIS -->
+  <section id="imoveis" class="section section-alt">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Nosso Portfólio</span>
+        <h2 class="section-title">Encontre seu novo lar</h2>
+        <p class="section-subtitle">Escolha entre lotes prontos para construir ou casas já finalizadas com o mais alto padrão de acabamento e design.</p>
+      </div>
+      
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="all">Todos os Imóveis</button>
+        <button class="filter-tab" data-filter="lote">Lotes e Terrenos</button>
+        <button class="filter-tab" data-filter="casa">Casas e Sobrados</button>
+      </div>
+      
+      <div class="props-grid" id="props-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE -->
+  <section id="sobre" class="section">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-text">
+          <div class="section-header">
+            <span class="section-eyebrow">Infraestrutura</span>
+            <h2 class="section-title" id="about-title">Sobre o Quintas Da Serra</h2>
+          </div>
+          <div class="about-desc" id="about-text">
+            <!-- Rendered by JS -->
+          </div>
+          
+          <div class="about-features">
+            <div class="about-feature">
+              <div class="about-feature-icon">🌿</div>
+              <div class="about-feature-text">Preservação Ambiental Integrada</div>
+            </div>
+            <div class="about-feature">
+              <div class="about-feature-icon">🛣️</div>
+              <div class="about-feature-text">Ruas Pavimentadas e Arborizadas</div>
+            </div>
+            <div class="about-feature">
+              <div class="about-feature-icon">🛡️</div>
+              <div class="about-feature-text">Portaria Monitorada 24hs</div>
+            </div>
+            <div class="about-feature">
+              <div class="about-feature-icon">🏊</div>
+              <div class="about-feature-text">Clube e Lazer Completo</div>
+            </div>
+          </div>
+          <blockquote style="border-left:4px solid var(--gold); padding:10px 20px; font-style:italic;" id="mission-text">
+            <!-- Rendered by JS -->
+          </blockquote>
+        </div>
+        
+        <div class="about-img-wrap animate-in">
+          <img src="assets/images/hero.png" alt="Vista do Condomínio" loading="lazy">
+          <div class="about-img-badge">
+            <div class="about-img-badge-number">+8k</div>
+            <div class="about-img-badge-label">m² de área verde</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="infra-grid" style="margin-top: 60px;">
+        <div class="infra-card"><div class="infra-icon">🎾</div><div class="infra-label">Quadras de Tênis</div></div>
+        <div class="infra-card"><div class="infra-icon">⚽</div><div class="infra-label">Campo de Futebol</div></div>
+        <div class="infra-card"><div class="infra-icon">🎉</div><div class="infra-label">Salão de Festas</div></div>
+        <div class="infra-card"><div class="infra-icon">🥩</div><div class="infra-label">Área Gourmet</div></div>
+        <div class="infra-card"><div class="infra-icon">🚲</div><div class="infra-label">Ciclovia Integrada</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTATO -->
+  <section id="contato" class="section section-alt">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info">
+          <h3>Fale com Nossos Corretores</h3>
+          <p>Tire suas dúvidas, agende uma visita ao condomínio ou solicite uma simulação de financiamento. Nossa equipe está pronta para ajudar você a realizar seu sonho.</p>
+          
+          <div class="contact-items">
+            <div class="contact-item">
+              <div class="contact-item-icon">📍</div>
+              <div>
+                <div class="contact-item-label">Endereço</div>
+                <div class="contact-item-value setting-address">Região Serrana de Macaé, RJ - Brasil</div>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-item-icon">📞</div>
+              <div>
+                <div class="contact-item-label">Telefone</div>
+                <div class="contact-item-value setting-phone">(22) 99999-9999</div>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-item-icon">✉️</div>
+              <div>
+                <div class="contact-item-label">E-mail</div>
+                <div class="contact-item-value setting-email">contato@quintasdaserra.com.br</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <form class="contact-form" id="contactForm">
+          <h3>Envie uma Mensagem</h3>
+          <div class="form-group">
+            <label for="nome">Nome Completo</label>
+            <input type="text" id="nome" required placeholder="Ex: João da Silva">
+          </div>
+          <div class="form-group">
+            <label for="contatoEmail">E-mail</label>
+            <input type="email" id="contatoEmail" required placeholder="Ex: joao@email.com">
+          </div>
+          <div class="form-group">
+            <label for="assunto">Assunto</label>
+            <select id="assunto" required>
+              <option value="" disabled selected>Selecione uma opção</option>
+              <option value="visita">Agendar Visita</option>
+              <option value="informacoes">Mais Informações</option>
+              <option value="financiamento">Simulação de Financiamento</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="mensagem">Mensagem</label>
+            <textarea id="mensagem" required placeholder="Como podemos ajudar você?"></textarea>
+          </div>
+          <button type="submit" class="form-submit">Enviar Mensagem</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo">
+          <div class="nav-logo-icon" style="width:36px;height:36px;font-size:16px;">Q</div>
+          <div class="nav-logo-text">
+            <span class="nav-logo-title">Quintas Da Serra</span>
+            <span class="nav-logo-sub" style="font-size:0.5rem;">Macaé-RJ</span>
+          </div>
+        </a>
+        <p>Desenvolvimento focado na qualidade de vida e conservação ambiental na deslumbrante Serra Macaense.</p>
+        <div class="footer-social">
+          <a href="#" class="setting-fb">f</a>
+          <a href="#" class="setting-ig">in</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-title">Links Rápidos</div>
+        <ul>
+          <li><a href="#inicio">Página Inicial</a></li>
+          <li><a href="#imoveis">Imóveis</a></li>
+          <li><a href="#sobre">Infraestrutura</a></li>
+          <li><a href="admin.html">Painel Corretor</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-title">Categorias</div>
+        <ul>
+          <li><a href="#imoveis">Lotes Residenciais</a></li>
+          <li><a href="#imoveis">Casas Térreas</a></li>
+          <li><a href="#imoveis">Sobrados Modernos</a></li>
+          <li><a href="#imoveis">Lotes Comerciais</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-title">Contato</div>
+        <ul>
+          <li><a href="#" class="setting-phone">(22) 99999-9999</a></li>
+          <li><a href="#" class="setting-email">contato@quintasdaserra.com.br</a></li>
+          <li><a href="#">Trabalhe Conosco</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div id="footer-text">© 2026 Quintas Da Serra Macaé-RJ. Todos os direitos reservados.</div>
+      <div>Desenvolvido com 💙 para Macaé-RJ</div>
+    </div>
+  </footer>
+
+  <!-- WHATSAPP FLOAT -->
+  <a href="#" class="whatsapp-float" target="_blank" id="whatsapp-btn" title="Fale pelo WhatsApp">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+  </a>
+
+  <!-- PROPERTY MODAL -->
+  <div class="modal-overlay" id="prop-modal">
+    <div class="modal" id="modal-container">
+      <button class="modal-close" id="modal-close">×</button>
+      <div id="modal-content">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
