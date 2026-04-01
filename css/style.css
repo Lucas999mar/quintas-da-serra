@@ -586,6 +586,11 @@ body {
   .about-features { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; }
   .infra-grid { grid-template-columns: repeat(2, 1fr); }
+  .featured-strip-inner { flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+  .featured-strip-label { text-align: center; }
+  .featured-cards-scroll { width: 100vw; margin-left: -5vw; padding: 0 5vw 10px 5vw; overflow-x: auto; flex-wrap: nowrap; }
+  .featured-cards-scroll::after { content: ''; padding-right: 5vw; display: block; }
+  .featured-mini-card { flex-shrink: 0; }
 }
 @media (max-width: 480px) {
   .hero-actions { flex-direction: column; }
