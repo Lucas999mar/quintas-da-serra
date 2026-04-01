@@ -273,7 +273,7 @@ body {
   overflow: hidden; box-shadow: var(--shadow-sm);
   transition: var(--transition); position: relative;
   border: 1px solid var(--gray-100);
-  min-width: 340px; max-width: 360px;
+  min-width: min(100%, 340px); max-width: 360px;
   flex-shrink: 0; scroll-snap-align: start;
 }
 .prop-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: var(--blue-pale); }
@@ -458,8 +458,8 @@ body {
 @keyframes fadeInOverlay { from{opacity:0} to{opacity:1} }
 .modal {
   background: white; border-radius: var(--radius-lg);
-  max-width: 780px; width: 100%; max-height: 90vh;
-  overflow-y: auto; position: relative;
+  max-width: 100%; width: 780px; max-height: 90vh;
+  overflow-y: auto; overflow-x: hidden; position: relative;
   animation: slideUpModal 0.3s ease;
 }
 @keyframes slideUpModal { from{transform:translateY(30px);opacity:0} to{transform:translateY(0);opacity:1} }

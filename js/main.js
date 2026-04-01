@@ -103,7 +103,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     fbLinks.forEach(el => el.href = s.facebook);
     igLinks.forEach(el => el.href = s.instagram);
-    if(wpLink) wpLink.href = 'https://wa.me/' + s.whatsapp;
+    if(wpLink) {
+      const wpNum = String(s.whatsapp || '').replace(/\D/g, '');
+      wpLink.href = 'https://api.whatsapp.com/send?phone=' + wpNum;
+    }
 
     renderHeroSlider(s.heroImages || []);
   }
@@ -257,7 +260,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const isLote = p.type === 'lote';
     const s = DataManager.getSettings();
     const wpMessage = encodeURIComponent(`Olá, tenho interesse no imóvel: ${p.title} (${p.location}) anunciado no site.`);
-    const wpLinkVal = `https://wa.me/${s.whatsapp}?text=${wpMessage}`;
+    const wpNum = String(s.whatsapp || '').replace(/\D/g, '');
+    const wpLinkVal = `https://api.whatsapp.com/send?phone=${wpNum}&text=${wpMessage}`;
     const badgeClass = isLote ? 'badge-lote' : 'badge-casa';
 
     // Image Gallery HTML
