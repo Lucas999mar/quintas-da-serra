@@ -122,3 +122,22 @@ td { padding: 15px; border-bottom: 1px solid #eee; font-size: 14px; }
 /* --- Site Settings Form --- */
 .settings-section { margin-bottom: 40px; }
 .settings-section h3 { margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--admin-primary); display: inline-block; }
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .admin-layout.active { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .sidebar { flex-direction: row; flex-wrap: nowrap; overflow-x: auto; }
+  .sidebar-header { padding: 15px; border-bottom: none; border-right: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; }
+  .sidebar-nav { display: flex; flex-direction: row; padding: 0; align-items: center; flex: 1; margin: 0; }
+  .nav-item { padding: 12px 15px; white-space: nowrap; }
+  
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .modal-grid { grid-template-columns: 1fr; }
+  .full-width { grid-column: span 1; }
+  .view-container { padding: 15px; }
+  .main-header { flex-direction: column; gap: 10px; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
+}

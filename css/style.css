@@ -578,8 +578,9 @@ body {
   .nav-links.open { display: flex; }
   .nav-hamburger { display: flex; }
   .portfolio-container { flex-direction: column; gap: 24px; }
-  .filter-tabs { flex-direction: row; min-width: 100%; overflow-x: auto; padding-bottom: 10px; flex-wrap: nowrap; }
-  .filter-tab { width: auto; white-space: nowrap; transform: none !important; }
+  .filter-tabs { flex-direction: row; width: 100vw; margin-left: -5vw; padding: 0 5vw 10px 5vw; overflow-x: auto; flex-wrap: nowrap; }
+  .filter-tabs::after { content: ''; padding-right: 5vw; display: block; }
+  .filter-tab { width: auto; white-space: nowrap; transform: none !important; flex-shrink: 0; }
   .props-grid { margin-top: 10px; padding-bottom: 20px; width: 100%; }
   .hero-stats { gap: 24px; }
   .about-features { grid-template-columns: 1fr; }
