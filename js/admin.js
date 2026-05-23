@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const canvas = document.createElement('canvas');
                         let width = img.width;
                         let height = img.height;
-                        const maxSide = 1000;
+                        const maxSide = 800; // Optimized from 1000 to save space
 
                         if (width > height && width > maxSide) {
                             height *= maxSide / width;
@@ -208,8 +208,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
 
-                        // Save as optimized JPEG
-                        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                        // Save as optimized JPEG with lower quality (0.55 is visually excellent but much smaller)
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.55);
                         currentImages.push(dataUrl);
                         renderAdminGallery();
                     };
@@ -274,10 +274,14 @@ document.addEventListener('DOMContentLoaded', () => {
             videoUrl: document.getElementById('p-video').value.trim()
         };
 
-        DataManager.saveProp(prop);
-        propModal.classList.remove('active');
-        renderPropertiesList();
-        renderDashboard();
+        try {
+            DataManager.saveProp(prop);
+            propModal.classList.remove('active');
+            renderPropertiesList();
+            renderDashboard();
+        } catch (err) {
+            alert('Erro ao salvar imóvel! O espaço de armazenamento do navegador está cheio. Por favor, reduza a quantidade ou o tamanho das fotos anexadas para liberar espaço.');
+        }
     });
 
     function toggleTypeFields(type) {
@@ -336,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const canvas = document.createElement('canvas');
                         let width = img.width;
                         let height = img.height;
-                        const maxSide = 1600; // Larger for hero backgrounds
+                        const maxSide = 1200; // Optimized from 1600 to prevent quota overflow
 
                         if (width > height && width > maxSide) {
                             height *= maxSide / width;
@@ -350,7 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
-                        const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.6); // Optimized quality (0.6 is clean but lightweight)
                         currentHeroImages.push(dataUrl);
                         renderAdminHeroList();
                     };
@@ -382,8 +386,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 facebook: DataManager.getSettings().facebook,
                 instagram: DataManager.getSettings().instagram
             };
-            DataManager.saveSettings(s);
-            alert('Configurações salvas com sucesso!');
+            try {
+                DataManager.saveSettings(s);
+                alert('Configurações salvas com sucesso!');
+            } catch (err) {
+                alert('Erro ao salvar configurações! O espaço de armazenamento do navegador está cheio. Por favor, remova ou otimize as fotos de fundo (Hero) para liberar espaço.');
+            }
         });
     }
 

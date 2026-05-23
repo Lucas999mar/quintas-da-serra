@@ -68,9 +68,117 @@ const DataManager = (() => {
   }
 
 
+  function shrinkBase64Image(base64Str, maxSide = 800, quality = 0.5) {
+    return new Promise((resolve) => {
+      if (!base64Str || !base64Str.startsWith('data:image')) {
+        resolve(base64Str);
+        return;
+      }
+      if (base64Str.length < 50000) {
+        resolve(base64Str);
+        return;
+      }
+      
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        
+        if (width > height && width > maxSide) {
+          height *= maxSide / width;
+          width = maxSide;
+        } else if (height > maxSide) {
+          width *= maxSide / height;
+          height = maxSide;
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        try {
+          const compressed = canvas.toDataURL('image/jpeg', quality);
+          resolve(compressed);
+        } catch (e) {
+          resolve(base64Str);
+        }
+      };
+      img.onerror = () => {
+        resolve(base64Str);
+      };
+      img.src = base64Str;
+    });
+  }
+
+  async function optimizeAllStoredImages() {
+    let modified = false;
+    
+    // 1. Optimize properties images
+    try {
+      const propsStr = localStorage.getItem(KEYS.PROPERTIES);
+      if (propsStr) {
+        const props = JSON.parse(propsStr);
+        for (let p of props) {
+          if (p.images && p.images.length > 0) {
+            for (let i = 0; i < p.images.length; i++) {
+              const original = p.images[i];
+              if (original && original.startsWith('data:image') && original.length > 50000) {
+                const optimized = await shrinkBase64Image(original, 800, 0.5);
+                if (optimized.length < original.length) {
+                  p.images[i] = optimized;
+                  modified = true;
+                }
+              }
+            }
+          }
+        }
+        if (modified) {
+          localStorage.setItem(KEYS.PROPERTIES, JSON.stringify(props));
+          console.log('qds_properties optimized successfully to free up localStorage.');
+        }
+      }
+    } catch (e) {
+      console.error('Error optimizing qds_properties:', e);
+    }
+    
+    // 2. Optimize settings heroImages
+    try {
+      const settingsStr = localStorage.getItem(KEYS.SETTINGS);
+      if (settingsStr) {
+        const settings = JSON.parse(settingsStr);
+        let settingsModified = false;
+        if (settings.heroImages && settings.heroImages.length > 0) {
+          for (let i = 0; i < settings.heroImages.length; i++) {
+            const original = settings.heroImages[i];
+            if (original && original.startsWith('data:image') && original.length > 80000) {
+              const optimized = await shrinkBase64Image(original, 1000, 0.5);
+              if (optimized.length < original.length) {
+                settings.heroImages[i] = optimized;
+                settingsModified = true;
+              }
+            }
+          }
+        }
+        if (settingsModified) {
+          localStorage.setItem(KEYS.SETTINGS, JSON.stringify(settings));
+          console.log('qds_settings heroImages optimized successfully.');
+        }
+      }
+    } catch (e) {
+      console.error('Error optimizing qds_settings:', e);
+    }
+  }
+
   function init() {
-    if (!localStorage.getItem(KEYS.PROPERTIES)) localStorage.setItem(KEYS.PROPERTIES, JSON.stringify(defaultProperties()));
-    if (!localStorage.getItem(KEYS.SETTINGS)) localStorage.setItem(KEYS.SETTINGS, JSON.stringify(defaultSettings()));
+    try {
+      if (!localStorage.getItem(KEYS.PROPERTIES)) localStorage.setItem(KEYS.PROPERTIES, JSON.stringify(defaultProperties()));
+      if (!localStorage.getItem(KEYS.SETTINGS)) localStorage.setItem(KEYS.SETTINGS, JSON.stringify(defaultSettings()));
+    } catch (e) {
+      console.error('Failed to initialize default storage:', e);
+    }
+    setTimeout(optimizeAllStoredImages, 1000);
   }
 
   function getAllProps() { try { return JSON.parse(localStorage.getItem(KEYS.PROPERTIES) || '[]'); } catch (e) { return []; } }
@@ -84,21 +192,54 @@ const DataManager = (() => {
     const now = new Date().toISOString();
     if (i >= 0) { arr[i] = { ...arr[i], ...prop, updatedAt: now }; }
     else { if (!prop.id) prop.id = genId(); arr.unshift({ ...prop, createdAt: now, updatedAt: now }); }
-    localStorage.setItem(KEYS.PROPERTIES, JSON.stringify(arr));
-    return prop;
+    
+    try {
+      localStorage.setItem(KEYS.PROPERTIES, JSON.stringify(arr));
+      return prop;
+    } catch (e) {
+      console.error('Failed to save to localStorage:', e);
+      throw e;
+    }
   }
 
-  function deleteProp(id) { localStorage.setItem(KEYS.PROPERTIES, JSON.stringify(getAllProps().filter(p => p.id !== id))); }
+  function deleteProp(id) {
+    try {
+      localStorage.setItem(KEYS.PROPERTIES, JSON.stringify(getAllProps().filter(p => p.id !== id)));
+    } catch (e) {
+      console.error('Failed to delete property:', e);
+      throw e;
+    }
+  }
 
   function toggleStatus(id) {
     const arr = getAllProps(); const p = arr.find(x => x.id === id);
-    if (p) { p.status = p.status === 'active' ? 'inactive' : 'active'; p.updatedAt = new Date().toISOString(); localStorage.setItem(KEYS.PROPERTIES, JSON.stringify(arr)); return p; }
+    if (p) {
+      p.status = p.status === 'active' ? 'inactive' : 'active';
+      p.updatedAt = new Date().toISOString();
+      try {
+        localStorage.setItem(KEYS.PROPERTIES, JSON.stringify(arr));
+        return p;
+      } catch (e) {
+        console.error('Failed to toggle status:', e);
+        throw e;
+      }
+    }
     return null;
   }
 
   function toggleFeatured(id) {
     const arr = getAllProps(); const p = arr.find(x => x.id === id);
-    if (p) { p.featured = !p.featured; p.updatedAt = new Date().toISOString(); localStorage.setItem(KEYS.PROPERTIES, JSON.stringify(arr)); return p; }
+    if (p) {
+      p.featured = !p.featured;
+      p.updatedAt = new Date().toISOString();
+      try {
+        localStorage.setItem(KEYS.PROPERTIES, JSON.stringify(arr));
+        return p;
+      } catch (e) {
+        console.error('Failed to toggle featured:', e);
+        throw e;
+      }
+    }
     return null;
   }
 
@@ -110,7 +251,15 @@ const DataManager = (() => {
     }
     return defaults;
   }
-  function saveSettings(s) { localStorage.setItem(KEYS.SETTINGS, JSON.stringify(s)); }
+  
+  function saveSettings(s) {
+    try {
+      localStorage.setItem(KEYS.SETTINGS, JSON.stringify(s));
+    } catch (e) {
+      console.error('Failed to save settings:', e);
+      throw e;
+    }
+  }
 
   /* --- Lead Management --- */
   function getAllLeads() { try { return JSON.parse(localStorage.getItem(KEYS.LEADS) || '[]'); } catch (e) { return []; } }
@@ -124,8 +273,13 @@ const DataManager = (() => {
       ...lead
     };
     arr.unshift(newLead);
-    localStorage.setItem(KEYS.LEADS, JSON.stringify(arr));
-    return newLead;
+    try {
+      localStorage.setItem(KEYS.LEADS, JSON.stringify(arr));
+      return newLead;
+    } catch (e) {
+      console.error('Failed to save lead:', e);
+      throw e;
+    }
   }
 
   function updateLeadStatus(id, status) {
@@ -133,14 +287,24 @@ const DataManager = (() => {
     const lead = arr.find(l => l.id === id);
     if (lead) {
       lead.status = status;
-      localStorage.setItem(KEYS.LEADS, JSON.stringify(arr));
-      return lead;
+      try {
+        localStorage.setItem(KEYS.LEADS, JSON.stringify(arr));
+        return lead;
+      } catch (e) {
+        console.error('Failed to update lead status:', e);
+        throw e;
+      }
     }
     return null;
   }
 
   function deleteLead(id) {
-    localStorage.setItem(KEYS.LEADS, JSON.stringify(getAllLeads().filter(l => l.id !== id)));
+    try {
+      localStorage.setItem(KEYS.LEADS, JSON.stringify(getAllLeads().filter(l => l.id !== id)));
+    } catch (e) {
+      console.error('Failed to delete lead:', e);
+      throw e;
+    }
   }
 
   function getLeadStats() {
@@ -167,7 +331,14 @@ const DataManager = (() => {
     };
   }
 
-  function reset() { localStorage.setItem(KEYS.PROPERTIES, JSON.stringify(defaultProperties())); localStorage.setItem(KEYS.SETTINGS, JSON.stringify(defaultSettings())); }
+  function reset() {
+    try {
+      localStorage.setItem(KEYS.PROPERTIES, JSON.stringify(defaultProperties()));
+      localStorage.setItem(KEYS.SETTINGS, JSON.stringify(defaultSettings()));
+    } catch (e) {
+      console.error('Failed to reset storage:', e);
+    }
+  }
 
   return {
     init, getAllProps, getActiveProps, getFeatured, getProp, saveProp, deleteProp, toggleStatus, toggleFeatured,
