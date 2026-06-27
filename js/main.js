@@ -472,7 +472,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.style.overflow = 'hidden';
 
     // Set temporary metadata for social sharing & previews
-    document.title = p.title + " | Quintas Da Serra";
+    document.title = p.title + " | Suporte Imobiliário";
     if (originalDescEl) originalDescEl.setAttribute('content', p.description.substring(0, 150) + "...");
     setMetaTag('og:title', p.title);
     setMetaTag('og:description', p.description.substring(0, 150) + "...");

@@ -487,7 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
       finalPhone = '55' + purePhone;
     }
 
-    const message = encodeURIComponent('Olá ' + lead.name + ', vi seu contato no site Quintas Da Serra sobre "' + lead.subject + '". Como posso ajudar?');
+    const message = encodeURIComponent('Olá ' + lead.name + ', vi seu contato no site Suporte Imobiliário sobre "' + lead.subject + '". Como posso ajudar?');
     window.open('https://wa.me/' + finalPhone + '?text=' + message, '_blank');
   }
 

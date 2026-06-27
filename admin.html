@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Quintas Da Serra Macaé-RJ</title>
+  <title>Admin - Suporte Imobiliário</title>
   <link rel="stylesheet" href="css/admin.css">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
 </head>
+
 <body>
 
   <!-- LOGIN SECTION -->
   <section class="login-page" id="login-section">
     <div class="login-card">
       <div class="login-header">
-        <div class="login-logo">Quintas Da Serra</div>
+        <div class="login-logo">Suporte Imobiliário</div>
         <p style="color: #666; font-size: 14px; margin-top: 5px;">Painel Administrativo</p>
       </div>
       <form class="login-form" id="login-form" autocomplete="off">
@@ -32,11 +36,11 @@
 
   <!-- DASHBOARD LAYOUT -->
   <div class="admin-layout" id="admin-layout">
-    
+
     <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="sidebar-header">
-        <div style="font-family: 'Playfair Display', serif; font-size: 20px;">Quintas Serra</div>
+        <div style="font-family: 'Playfair Display', serif; font-size: 20px;">Suporte Imobiliário</div>
       </div>
       <nav class="sidebar-nav">
         <div class="nav-item active" data-view="dashboard">Dashboard</div>
@@ -46,7 +50,9 @@
         <a href="index.html" class="nav-item">Visualizar Site</a>
       </nav>
       <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
-        <button id="logout-btn" style="background: none; border: none; color: rgba(255,255,255,0.6); cursor: pointer; font-size: 14px;">Sair do Sistema</button>
+        <button id="logout-btn"
+          style="background: none; border: none; color: rgba(255,255,255,0.6); cursor: pointer; font-size: 14px;">Sair
+          do Sistema</button>
       </div>
     </aside>
 
@@ -58,7 +64,7 @@
       </header>
 
       <div class="view-container">
-        
+
         <!-- DASHBOARD VIEW -->
         <div id="view-dashboard">
           <div class="stats-grid">
@@ -79,7 +85,7 @@
               <div class="stat-value" id="stat-casas">0</div>
             </div>
           </div>
-          
+
           <div class="dashboard-grid" style="margin-top: 20px;">
             <div class="stat-card" style="border-left: 4px solid #25d366;">
               <div class="stat-value" id="stat-leads-new">0</div>
@@ -96,9 +102,12 @@
               <h3>Ações Rápidas</h3>
             </div>
             <div style="padding: 30px; display: flex; gap: 20px; flex-wrap: wrap;">
-              <button class="btn-save" id="add-prop-btn" style="background: var(--admin-primary);">+ Novo Imóvel</button>
-              <button class="btn-save" onclick="document.querySelector('[data-view=settings]').click()" style="background: var(--admin-secondary);">Editar Cabeçalho</button>
-              <button class="btn-save" onclick="DataManager.reset(); location.reload();" style="background: #666;">Resetar para Padrão</button>
+              <button class="btn-save" id="add-prop-btn" style="background: var(--admin-primary);">+ Novo
+                Imóvel</button>
+              <button class="btn-save" onclick="document.querySelector('[data-view=settings]').click()"
+                style="background: var(--admin-secondary);">Editar Cabeçalho</button>
+              <button class="btn-save" onclick="DataManager.reset(); location.reload();"
+                style="background: #666;">Resetar para Padrão</button>
             </div>
           </div>
 
@@ -108,13 +117,17 @@
             </div>
             <div style="padding: 30px;">
               <p style="color: #475569; font-size: 14px; margin-bottom: 20px; line-height: 1.6;">
-                Use as ferramentas abaixo para sincronizar seus imóveis e configurações entre o computador e o celular, ou gerar o arquivo Javascript para salvar definitivamente no seu projeto local.
+                Use as ferramentas abaixo para sincronizar seus imóveis e configurações entre o computador e o celular,
+                ou gerar o arquivo Javascript para salvar definitivamente no seu projeto local.
               </p>
               <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                <button class="btn-save" id="btn-export-json" style="background: var(--admin-primary);">📤 Exportar Backup (JSON)</button>
-                <button class="btn-save" id="btn-import-json-trigger" style="background: var(--admin-success);">📥 Importar Backup (JSON)</button>
+                <button class="btn-save" id="btn-export-json" style="background: var(--admin-primary);">📤 Exportar
+                  Backup (JSON)</button>
+                <button class="btn-save" id="btn-import-json-trigger" style="background: var(--admin-success);">📥
+                  Importar Backup (JSON)</button>
                 <input type="file" id="import-json-file" accept=".json" style="display: none;">
-                <button class="btn-save" id="btn-export-code" style="background: var(--admin-secondary);">💾 Exportar Código data.js</button>
+                <button class="btn-save" id="btn-export-code" style="background: var(--admin-secondary);">💾 Exportar
+                  Código data.js</button>
               </div>
             </div>
           </div>
@@ -125,14 +138,23 @@
           <div class="content-card">
             <div class="card-header">
               <h3>Lista de Imóveis</h3>
-              <button class="btn-save" style="padding: 8px 15px; font-size: 13px;" id="add-prop-btn-2">+ Adicionar</button>
+              <button class="btn-save" style="padding: 8px 15px; font-size: 13px;" id="add-prop-btn-2">+
+                Adicionar</button>
             </div>
             <div class="table-container">
-                <table id="properties-table">
-                  <thead><tr><th>Imóvel</th><th>Tipo</th><th>Preço</th><th>Stats</th><th>Ações</th></tr></thead>
-                  <tbody id="properties-list"></tbody>
-                </table>
-              </div>
+              <table id="properties-table">
+                <thead>
+                  <tr>
+                    <th>Imóvel</th>
+                    <th>Tipo</th>
+                    <th>Preço</th>
+                    <th>Stats</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="properties-list"></tbody>
+              </table>
+            </div>
           </div>
         </div>
 
@@ -140,13 +162,23 @@
         <div class="admin-view" id="view-leads" style="display: none;">
           <div class="view-header">
             <h3>Gestão de Leads / CRM</h3>
-            <p style="font-size: 0.9rem; color: var(--admin-text-light);">Acompanhe os contatos realizados pelo site e gerencie o status de cada um.</p>
+            <p style="font-size: 0.9rem; color: var(--admin-text-light);">Acompanhe os contatos realizados pelo site e
+              gerencie o status de cada um.</p>
           </div>
-          
+
           <div class="dashboard-section" style="margin-top: 0;">
             <div class="table-container">
               <table id="leads-table">
-                <thead><tr><th>Data</th><th>Cliente</th><th>Contato</th><th>Assunto</th><th>Status</th><th>Ações</th></tr></thead>
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Cliente</th>
+                    <th>Contato</th>
+                    <th>Assunto</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
                 <tbody id="leads-list"></tbody>
               </table>
             </div>
@@ -211,12 +243,14 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="settings-section">
               <h3>Slider do Hero (Carrossel de Fundo)</h3>
-              <p style="font-size: 0.9rem; color: var(--admin-text-light); margin-bottom: 15px;">Adicione ou remova imagens que aparecem no fundo da página inicial.</p>
-              
-              <div class="upload-container" style="border: 2px dashed #ddd; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 15px;">
+              <p style="font-size: 0.9rem; color: var(--admin-text-light); margin-bottom: 15px;">Adicione ou remova
+                imagens que aparecem no fundo da página inicial.</p>
+
+              <div class="upload-container"
+                style="border: 2px dashed #ddd; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 15px;">
                 <input type="file" id="hero-upload" multiple accept="image/*" style="display: none;">
                 <label for="hero-upload" style="cursor: pointer; display: block;">
                   <span style="font-size: 24px;">🖼️</span><br>
@@ -224,7 +258,7 @@
                   <small>Clique aqui para selecionar arquivos</small>
                 </label>
               </div>
-              
+
               <div id="admin-hero-list" class="admin-gallery-list">
                 <!-- JS Render -->
               </div>
@@ -232,9 +266,11 @@
 
             <div class="settings-section">
               <h3>Galeria da Seção "Sobre Nós" (Carrossel Rotativo)</h3>
-              <p style="font-size: 0.9rem; color: var(--admin-text-light); margin-bottom: 15px;">Adicione ou remova imagens para a seção "Sobre Nós" (rotativas automaticamente).</p>
-              
-              <div class="upload-container" style="border: 2px dashed #ddd; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 15px;">
+              <p style="font-size: 0.9rem; color: var(--admin-text-light); margin-bottom: 15px;">Adicione ou remova
+                imagens para a seção "Sobre Nós" (rotativas automaticamente).</p>
+
+              <div class="upload-container"
+                style="border: 2px dashed #ddd; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 15px;">
                 <input type="file" id="about-upload" multiple accept="image/*" style="display: none;">
                 <label for="about-upload" style="cursor: pointer; display: block;">
                   <span style="font-size: 24px;">🖼️</span><br>
@@ -242,7 +278,7 @@
                   <small>Clique aqui para selecionar arquivos</small>
                 </label>
               </div>
-              
+
               <div id="admin-about-list" class="admin-gallery-list">
                 <!-- JS Render -->
               </div>
@@ -285,7 +321,7 @@
             <label class="form-label">Localização (Quadra/Lote)</label>
             <input type="text" id="p-location" class="form-input" required>
           </div>
-          
+
           <!-- Casa Only Fields -->
           <div class="form-group house-only">
             <label class="form-label">Quartos</label>
@@ -306,7 +342,8 @@
           </div>
           <div class="form-group full-width">
             <label class="form-label">Características (separadas por vírgula)</label>
-            <input type="text" id="p-features" class="form-input" placeholder="Piscina, Churrasqueira, Vista para Serra...">
+            <input type="text" id="p-features" class="form-input"
+              placeholder="Piscina, Churrasqueira, Vista para Serra...">
           </div>
 
           <!-- Gallery and Video Support -->
@@ -318,26 +355,30 @@
           <div class="form-group full-width">
             <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
               Galeria de Imagens
-              <span style="font-size: 11px; font-weight: normal; color: var(--admin-text-light);">Adicione URLs de imagens</span>
+              <span style="font-size: 11px; font-weight: normal; color: var(--admin-text-light);">Adicione URLs de
+                imagens</span>
             </label>
-            <div class="upload-container" style="border: 2px dashed var(--admin-text-light); border-radius: 8px; padding: 20px; text-align: center; background: #fafafa; transition: 0.3s; margin-bottom: 15px;">
+            <div class="upload-container"
+              style="border: 2px dashed var(--admin-text-light); border-radius: 8px; padding: 20px; text-align: center; background: #fafafa; transition: 0.3s; margin-bottom: 15px;">
               <input type="file" id="p-upload-image" multiple accept="image/*" style="display: none;">
               <label for="p-upload-image" style="cursor: pointer; display: block;">
                 <div style="font-size: 24px; margin-bottom: 10px;">📤</div>
                 <div style="font-weight: 600; color: var(--admin-sidebar);">Clique para fazer Upload</div>
-                <div style="font-size: 12px; color: var(--admin-text-light);">Você pode selecionar várias imagens de uma vez</div>
+                <div style="font-size: 12px; color: var(--admin-text-light);">Você pode selecionar várias imagens de uma
+                  vez</div>
               </label>
             </div>
             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
               <input type="text" id="p-new-image" class="form-input" placeholder="Ou cole a URL de uma imagem...">
-              <button type="button" id="add-image-btn" class="btn-save" style="padding: 8px 15px; background: var(--admin-secondary); flex-shrink: 0;">+</button>
+              <button type="button" id="add-image-btn" class="btn-save"
+                style="padding: 8px 15px; background: var(--admin-secondary); flex-shrink: 0;">+</button>
             </div>
             <div id="admin-gallery-list" class="admin-gallery-list">
               <!-- JS Render -->
             </div>
           </div>
         </div>
-        
+
         <div style="margin-top: 30px; display: flex; justify-content: flex-end; gap: 10px;">
           <button type="button" class="btn-cancel" id="cancel-prop-btn">Cancelar</button>
           <button type="submit" class="btn-save">Salvar Imóvel</button>
@@ -349,7 +390,8 @@
   <!-- LEAD VIEW MODAL -->
   <div class="admin-modal" id="lead-modal">
     <div class="modal-box" style="max-width: 600px;">
-      <h2 style="margin-bottom: 20px; border-bottom: 2px solid var(--admin-primary); padding-bottom: 10px;">Detalhes do Lead</h2>
+      <h2 style="margin-bottom: 20px; border-bottom: 2px solid var(--admin-primary); padding-bottom: 10px;">Detalhes do
+        Lead</h2>
       <div id="lead-details-content">
         <!-- JS Render -->
       </div>
@@ -375,15 +417,19 @@
   <!-- EXPORT CODE MODAL -->
   <div class="admin-modal" id="code-modal">
     <div class="modal-box" style="max-width: 800px;">
-      <h2 style="margin-bottom: 15px; border-bottom: 2px solid var(--admin-secondary); padding-bottom: 10px;">Código data.js Gerado</h2>
+      <h2 style="margin-bottom: 15px; border-bottom: 2px solid var(--admin-secondary); padding-bottom: 10px;">Código
+        data.js Gerado</h2>
       <p style="font-size: 13px; color: #666; margin-bottom: 15px;">
-        Substitua o conteúdo do seu arquivo local <code>js/data.js</code> com o código abaixo ou baixe o arquivo para tornar suas alterações permanentes no site.
+        Substitua o conteúdo do seu arquivo local <code>js/data.js</code> com o código abaixo ou baixe o arquivo para
+        tornar suas alterações permanentes no site.
       </p>
-      <textarea id="code-export-textarea" readonly style="width: 100%; height: 350px; font-family: monospace; font-size: 12px; padding: 15px; border: 1px solid #ddd; border-radius: 6px; resize: none; background: #fafafa; margin-bottom: 20px; white-space: pre; overflow: auto;"></textarea>
+      <textarea id="code-export-textarea" readonly
+        style="width: 100%; height: 350px; font-family: monospace; font-size: 12px; padding: 15px; border: 1px solid #ddd; border-radius: 6px; resize: none; background: #fafafa; margin-bottom: 20px; white-space: pre; overflow: auto;"></textarea>
       <div style="display: flex; gap: 15px; justify-content: flex-end; flex-wrap: wrap;">
         <button class="btn-cancel" id="btn-close-code-modal">Fechar</button>
         <button class="btn-save" id="btn-copy-code" style="background: var(--admin-primary);">Copiar Código</button>
-        <button class="btn-save" id="btn-download-code-file" style="background: var(--admin-secondary);">Baixar Arquivo data.js</button>
+        <button class="btn-save" id="btn-download-code-file" style="background: var(--admin-secondary);">Baixar Arquivo
+          data.js</button>
       </div>
     </div>
   </div>
@@ -397,4 +443,5 @@
     });
   </script>
 </body>
+
 </html>
