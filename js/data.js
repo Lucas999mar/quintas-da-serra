@@ -26,7 +26,7 @@ const DataManager = (() => {
   }
 
   function defaultProperties() {
-    const now = new Date().toISOString();
+    const now = '2026-06-27T10:00:00Z';
     return [
       {
         "id": "p_mpilxs7n97qzap",
@@ -152,8 +152,19 @@ const DataManager = (() => {
       }
       const storedSettingsStr = localStorage.getItem(KEYS.SETTINGS);
       const defaultS = defaultSettings();
-      if (!storedSettingsStr) { localStorage.setItem(KEYS.SETTINGS, JSON.stringify(defaultS)); }
-      else {
+      const SYSTEM_VERSION = '2.0'; // Increment this to force settings update
+
+      if (!storedSettingsStr || localStorage.getItem('qds_version') !== SYSTEM_VERSION) {
+        // If no settings or version mismatch, we need to merge or overwrite
+        let newSettings = defaultS;
+        if (storedSettingsStr) {
+          const oldSettings = JSON.parse(storedSettingsStr);
+          // Keep some user-specific things if they exist, but update the rest
+          newSettings = { ...oldSettings, ...defaultS };
+        }
+        localStorage.setItem(KEYS.SETTINGS, JSON.stringify(newSettings));
+        localStorage.setItem('qds_version', SYSTEM_VERSION);
+      } else {
         let storedSettings = JSON.parse(storedSettingsStr) || {}, changedS = false;
         for (const key in defaultS) { if (!(key in storedSettings)) { storedSettings[key] = defaultS[key]; changedS = true; } }
         if (changedS) localStorage.setItem(KEYS.SETTINGS, JSON.stringify(storedSettings));
