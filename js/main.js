@@ -30,6 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentSlide = 0;
   let slideInterval = null;
 
+  let currentAboutSlide = 0;
+  let aboutSlideInterval = null;
+
   /* --- Contact Form --- */
   const contactForm = document.getElementById('contactForm');
   if (contactForm) {
@@ -88,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* --- Load Settings --- */
   function loadSettings() {
     const s = DataManager.getSettings();
-    if (heroTitle) heroTitle.innerHTML = s.heroTitle.replace('Quintas Da Serra', '<span>Quintas Da Serra</span>');
+    if (heroTitle) heroTitle.innerHTML = s.heroTitle.replace('Suporte Imobiliário', '<span>Suporte Imobiliário</span>').replace('Imobiliárias', '<span>Imobiliárias</span>');
     if (heroSubtitle) heroSubtitle.textContent = s.heroSubtitle;
     if (heroBtn) heroBtn.textContent = s.heroBtn;
 
@@ -109,6 +112,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     renderHeroSlider(s.heroImages || []);
+    renderAboutSlider(s.aboutImages || []);
+  }
+
+  function renderAboutSlider(images) {
+    const aboutSlides = document.getElementById('about-slides');
+    if (!aboutSlides) return;
+    if (!images || !images.length) {
+      aboutSlides.innerHTML = '<div class="about-slide active" style="background-image: url(\'assets/images/house.png\')"></div>';
+      return;
+    }
+    aboutSlides.innerHTML = images.map((img, i) => `
+      <div class="about-slide ${i === 0 ? 'active' : ''}" style="background-image: url('${img}')"></div>
+    `).join('');
+    startAboutSlider();
+  }
+
+  function startAboutSlider() {
+    if (aboutSlideInterval) clearInterval(aboutSlideInterval);
+    const slides = document.querySelectorAll('.about-slide');
+    if (slides.length <= 1) return;
+    currentAboutSlide = 0;
+    aboutSlideInterval = setInterval(() => {
+      slides[currentAboutSlide].classList.remove('active');
+      currentAboutSlide = (currentAboutSlide + 1) % slides.length;
+      slides[currentAboutSlide].classList.add('active');
+    }, 5000);
   }
 
   function renderHeroSlider(images) {
@@ -252,6 +281,91 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Save original metadata
+  const originalTitle = document.title;
+  const originalDescEl = document.querySelector('meta[name="description"]');
+  const originalDesc = originalDescEl ? originalDescEl.getAttribute('content') : '';
+
+  function setMetaTag(property, content) {
+    let el = document.querySelector(`meta[property="${property}"]`);
+    if (!el) {
+      el = document.createElement('meta');
+      el.setAttribute('property', property);
+      document.head.appendChild(el);
+    }
+    el.setAttribute('content', content);
+  }
+
+  function removeMetaTag(property) {
+    const el = document.querySelector(`meta[property="${property}"]`);
+    if (el) el.remove();
+  }
+
+  window.shareProperty = async function (id) {
+    const p = DataManager.getProp(id);
+    if (!p) return;
+
+    const shareUrl = window.location.origin + '/imovel/' + p.id;
+    const isLote = p.type === 'lote';
+    const firstImg = p.images && p.images.length > 0 ? p.images[0] : (isLote ? 'assets/images/lot.png' : 'assets/images/house.png');
+
+    // Absolute path for fetching and meta
+    const absImgUrl = firstImg.startsWith('data:') ? firstImg : (window.location.origin + '/' + (firstImg.startsWith('/') ? firstImg.substring(1) : firstImg));
+
+    let imgText = '';
+    if (absImgUrl && !absImgUrl.startsWith('data:')) {
+      imgText = `\n🖼️ Foto: ${absImgUrl}`;
+    }
+
+    const priceText = p.price > 0 ? DataManager.fmtPrice(p.price) : 'Sob consulta';
+    const shareText = `🏡 *${p.title}*\n📍 Localização: ${p.location}\n💰 Valor: ${priceText}${imgText}\n\n👉 Veja mais detalhes no site: ${shareUrl}`;
+
+    if (navigator.share) {
+      const shareData = {
+        title: p.title,
+        text: shareText,
+        url: shareUrl
+      };
+
+      // Try to share the image as a file if it's a URL and supported
+      if (!absImgUrl.startsWith('data:') && navigator.canShare && navigator.canShare({ files: [] })) {
+        try {
+          const response = await fetch(absImgUrl);
+          const blob = await response.blob();
+          const ext = absImgUrl.split('.').pop().toLowerCase().split('?')[0]; // simple extension extraction
+          const mime = blob.type || (ext === 'png' ? 'image/png' : 'image/jpeg');
+          const file = new File([blob], `imovel.${ext}`, { type: mime });
+
+          if (navigator.canShare({ files: [file] })) {
+            shareData.files = [file];
+          }
+        } catch (err) {
+          console.error("Error fetching image for share:", err);
+        }
+      }
+
+      navigator.share(shareData).catch(() => {
+        copyTextToClipboard(shareText);
+      });
+    } else {
+      copyTextToClipboard(shareText);
+    }
+  };
+
+  function copyTextToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('Link e informações copiados com sucesso!', 'success');
+    }).catch(() => {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      showToast('Link e informações copiados com sucesso!', 'success');
+    });
+  }
+
   // Modal Functions (Global so HTML onclick can reach them)
   window.openPropModal = function (id) {
     const p = DataManager.getProp(id);
@@ -340,16 +454,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
         ${videoHtml}
         
-        <a href="${wpLinkVal}" target="_blank" class="modal-btn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-          Falar com Corretor via WhatsApp
-        </a>
+        <div class="modal-actions-row" style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+          <a href="${wpLinkVal}" target="_blank" class="modal-btn" style="flex: 1; min-width: 200px; margin-top: 0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            Falar com Corretor via WhatsApp
+          </a>
+          <button onclick="shareProperty('${p.id}')" class="modal-btn" style="flex: 1; min-width: 200px; margin-top: 0; background: linear-gradient(135deg, var(--blue-light), var(--blue)); border: none; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Compartilhar Imóvel
+          </button>
+        </div>
       </div>
     `;
 
     document.getElementById('modal-content').innerHTML = html;
     modalOverlay.classList.add('open');
     document.body.style.overflow = 'hidden';
+
+    // Set temporary metadata for social sharing & previews
+    document.title = p.title + " | Quintas Da Serra";
+    if (originalDescEl) originalDescEl.setAttribute('content', p.description.substring(0, 150) + "...");
+    setMetaTag('og:title', p.title);
+    setMetaTag('og:description', p.description.substring(0, 150) + "...");
+    const absImgUrl = images[0].startsWith('data:') ? images[0] : (window.location.origin + '/' + images[0]);
+    setMetaTag('og:image', absImgUrl);
+    setMetaTag('og:url', window.location.origin + '/?imovel=' + p.id);
   };
 
   const closeModal = () => {
@@ -357,6 +486,19 @@ document.addEventListener('DOMContentLoaded', () => {
       modalOverlay.classList.remove('open');
       document.body.style.overflow = '';
       document.getElementById('modal-content').innerHTML = '';
+
+      // Reset query param
+      const url = new URL(window.location.href);
+      url.searchParams.delete('imovel');
+      window.history.replaceState({}, '', url.pathname + url.search);
+
+      // Restore metadata
+      document.title = originalTitle;
+      if (originalDescEl) originalDescEl.setAttribute('content', originalDesc);
+      removeMetaTag('og:title');
+      removeMetaTag('og:description');
+      removeMetaTag('og:image');
+      removeMetaTag('og:url');
     }
   };
 
@@ -379,5 +521,14 @@ document.addEventListener('DOMContentLoaded', () => {
   loadSettings();
   renderFeatured();
   renderCatalog('all');
+
+  // Check deep link query parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  const imovelId = urlParams.get('imovel');
+  if (imovelId) {
+    setTimeout(() => {
+      window.openPropModal(imovelId);
+    }, 300);
+  }
 
 });
